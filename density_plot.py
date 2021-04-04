@@ -9,7 +9,7 @@ def main(argv):
         pos = f.readlines()
     with open(neg_cov_name) as f2:
         neg = f2.readlines()
-    total_fq = int(sys.argv[3])
+    total_read = int(sys.argv[3])
     path = sys.argv[4]
     if sys.argv[1] == 'max_circle.cov':
         exit()
@@ -26,11 +26,11 @@ def main(argv):
 
     for i in range(len(pos)):
         pos_unnorm_i = int(pos[i].split()[-1])
-        pos_y.append(pos_unnorm_i / (total_fq / 4 / 1000000))
+        pos_y.append(pos_unnorm_i / (total_read  / 1000000))
 
     for i in range(len(neg)):
         neg_unnorm_i = -int(neg[i].split()[-1])
-        neg_y.append(neg_unnorm_i / (total_fq / 4 / 1000000))
+        neg_y.append(neg_unnorm_i / (total_read / 1000000))
 
         # reverse horizontally and vertically
     if sign == 'negative':
@@ -41,8 +41,8 @@ def main(argv):
     else:
         neg_y_final = neg_y
         pos_y_final = pos_y
-
     # change x axis
+    # print(pos[0].split()[0][-1])
     if pos[0].split()[0][-1] == '+' or sign == 'negative':
         x_max_num = x_max_num - x_min_num + 1
         x_min_num = 1
@@ -53,18 +53,23 @@ def main(argv):
     ax.spines['right'].set_color('none')
     ax.spines['top'].set_color('none')
     ax.yaxis.set_ticks_position('left')
+    '''    if sign=='negative' :
+            ax.invert_yaxis()
+    '''
+
     plt.plot(x_axis, pos_y_final,
                  color='red',
                  label='positve',
                  alpha=0.6,
                  linewidth=1)
-
+    # plt.fill(x_axis_pos, pos_y, color="red", alpha=0.4)
     plt.plot(x_axis, neg_y_final,
                  color='blue',
                  label='negative',
                  alpha=0.6,
                  linewidth=1)
-   
+    # plt.fill(x_axis_neg, neg_y, color="blue", alpha=0.4)
+
     plt.ylabel('coverage')
     plt.xlabel('base number')
     title = name + ': ' + str(x_min_num) + '-' + str(x_max_num)
